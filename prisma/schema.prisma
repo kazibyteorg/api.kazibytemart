@@ -12,3 +12,127 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model User {
+  id          String   @id @default(cuid())
+  authUserId  String   @unique
+  name        String
+  email       String
+  phoneNumber String?
+  address     String   @default("Gazipur, Dhaka")
+  city        String   @default("Dhaka")
+  state       String   @default("Dhaka")
+  country     String   @default("Bangladesh")
+  postalCode  String   @default("1000")
+  isActive    Boolean  @default(true)
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([authUserId])
+}
+
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model AuthUser {
+  id               String             @id @default(cuid())
+  name             String
+  email            String             @unique
+  password         String
+  role             Role               @default(USER)
+  verified         Boolean            @default(false)
+  status           AccountStatus      @default(PENDING)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  LoginHistory     LoginHistory[]
+  VerificationCode verificationCode[]
+}
+
+enum LoginAttempt {
+  SUCCESS
+  FAILED
+}
+
+model LoginHistory {
+  id        String       @id @default(cuid())
+  userId    String
+  user      AuthUser     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ip        String?
+  userAgent String?
+  attempt   LoginAttempt @default(SUCCESS)
+  loggedAt  DateTime     @default(now())
+}
+
+enum VerificationStatus {
+  PENDING
+  USER
+  EXPIRED
+}
+
+enum VerificationCodeType {
+  ACCOUND_ACITVATION
+  FORGOT_PASSWORD
+  EMAIL_CHANGE
+}
+
+model verificationCode {
+  id         String               @id @default(cuid())
+  userId     String
+  user       AuthUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code       String
+  type       VerificationCodeType @default(ACCOUND_ACITVATION)
+  status     VerificationStatus   @default(PENDING)
+  expireAt   DateTime
+  issuedAt   DateTime             @default(now())
+  verifiedAt DateTime?
+}
+
+// order
+
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  userName   String
+  userEmail  String
+  subtotal   Float       @default(0)
+  tax        Float       @default(0)
+  grandTotal Float       @default(0)
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id          String @id @default(cuid())
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  productName String
+  sku         String
+  price       Float
+  quantity    Int
+  total       Float
+}
