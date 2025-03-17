@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,31 +10,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+// User Management
 model User {
-  id          String   @id @default(cuid())
-  authUserId  String   @unique
-  name        String
-  email       String
-  phoneNumber String?
-  address     String   @default("Gazipur, Dhaka")
-  city        String   @default("Dhaka")
-  state       String   @default("Dhaka")
-  country     String   @default("Bangladesh")
-  postalCode  String   @default("1000")
-  isActive    Boolean  @default(true)
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String    @id @default(cuid())
+  authUserId    String    @unique
+  name          String
+  email         String
+  phoneNumber   String?
+  addresses     Address[]
+  defaultAddressId String?
+  isActive      Boolean   @default(true)
+  isDeleted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  orders        Order[]
+  cart          Cart?
+  wishlist      Wishlist?
+  reviews       Review[]
+  paymentMethods PaymentMethod[]
+  notifications Notification[]
 
   @@index([authUserId])
 }
+model Notification {
+  id  String    @id @default(cuid())
 
+  User User[]
+}
+model PaymentMethod {
+  id  String    @id @default(cuid())
 
+  User User[]
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String   // Name for this address (e.g. "Home", "Work")
+  addressLine1 String
+  addressLine2 String?
+  city        String
+  state       String
+  country     String
+  postalCode  String
+  isDefault   Boolean  @default(false)
+  phoneNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  orders      Order[]  @relation("ShippingAddress")
+  billingOrders Order[] @relation("BillingAddress")
+}
 
 enum Role {
   USER
   ADMIN
+  MANAGER
+  SUPPORT
 }
 
 enum AccountStatus {
@@ -57,8 +90,23 @@ model AuthUser {
   status           AccountStatus      @default(PENDING)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
-  LoginHistory     LoginHistory[]
-  VerificationCode verificationCode[]
+  
+  // Relations
+  loginHistory     LoginHistory[]
+  verificationCode VerificationCode[]
+  passwordResets   PasswordReset[]
+  sessionTokens    SessionToken[]
+}
+
+model SessionToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  userId     String
+  user       AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  
+  @@index([token])
 }
 
 enum LoginAttempt {
@@ -72,67 +120,380 @@ model LoginHistory {
   user      AuthUser     @relation(fields: [userId], references: [id], onDelete: Cascade)
   ip        String?
   userAgent String?
+  device    String?
+  location  String?
   attempt   LoginAttempt @default(SUCCESS)
   loggedAt  DateTime     @default(now())
 }
 
 enum VerificationStatus {
   PENDING
-  USER
+  VERIFIED
   EXPIRED
 }
 
 enum VerificationCodeType {
-  ACCOUND_ACITVATION
+  ACCOUNT_ACTIVATION
   FORGOT_PASSWORD
   EMAIL_CHANGE
+  PHONE_VERIFICATION
 }
 
-model verificationCode {
+model VerificationCode {
   id         String               @id @default(cuid())
   userId     String
   user       AuthUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
   code       String
-  type       VerificationCodeType @default(ACCOUND_ACITVATION)
+  type       VerificationCodeType @default(ACCOUNT_ACTIVATION)
   status     VerificationStatus   @default(PENDING)
   expireAt   DateTime
   issuedAt   DateTime             @default(now())
   verifiedAt DateTime?
 }
 
-// order
+model PasswordReset {
+  id         String   @id @default(cuid())
+  userId     String
+  user       AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String   @unique
+  expireAt   DateTime
+  issuedAt   DateTime @default(now())
+  usedAt     DateTime?
+  isUsed     Boolean  @default(false)
+}
 
+// Product Management
+model Product {
+  id                String           @id @default(cuid())
+  sku               String           @unique
+  title             String
+  slug              String           @unique
+  imgCover          String?
+  images            String[]
+  description       String?
+  shortDescription  String?
+  price             Float
+  priceAfterDiscount Float?
+  quantity          Int              @default(0)
+  sold              Int              @default(0)
+  categoryId        Int
+  subcategoryId     Int
+  brandId           Int
+  featured          Boolean          @default(false)
+  isNew             Boolean          @default(true)
+  isBestSeller      Boolean          @default(false)
+  isActive          Boolean          @default(true)
+  weight            Float?           // In kg
+  dimensions        String?          // Format: LxWxH in cm
+  tags              String[]
+  metaTitle         String?
+  metaDescription   String?
+  ratingAvg         Float?     
+  ratingCount       Int              @default(0)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
+  // Relations
+  category          Category         @relation(fields: [categoryId], references: [id])
+  subcategory       Subcategory      @relation(fields: [subcategoryId], references: [id])
+  brand             Brand            @relation(fields: [brandId], references: [id])
+  reviews           Review[]
+  variants          ProductVariant[]
+  attributes        ProductAttribute[]
+  coupons           ProductCoupon[]
+  cartItems         CartItem[]
+  wishlistItems     WishlistItem[]
+  orderItems        OrderItem[]
+  inventoryLogs     InventoryLog[]
+
+  @@index([categoryId, subcategoryId, brandId])
+  @@index([slug])
+  @@index([isActive, featured, isNew, isBestSeller])
+}
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String
+  slug        String        @unique
+  description String?
+  image       String?
+  isActive    Boolean       @default(true)
+  products    Product[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // Relations
+  subcategories Subcategory[]
+
+  @@index([slug])
+}
+
+model Subcategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug, categoryId])
+}
+
+model Brand {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  logo        String
+  website     String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+}
+
+model Review {
+  id        String    @id @default(cuid())
+  rating    Int
+  title     String?
+  comment   String
+  productId String
+  userId    String
+  isVerified Boolean  @default(false)
+  isPublished Boolean @default(true)
+  
+  // Relations
+  product   Product   @relation(fields: [productId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([productId, userId])
+}
+
+model ProductVariant {
+  id        Int       @id @default(autoincrement())
+  productId String
+  sku       String    @unique
+  name      String
+  price     Float
+  stock     Int       @default(0)
+  images    String[]
+  options   Json      // Store variant options like color, size, etc.
+  
+  // Relations
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([productId])
+}
+
+// Product Attributes (for filtering)
+model ProductAttribute {
+  id          Int     @id @default(autoincrement())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name        String  // e.g. "Color", "Size", "Material"
+  value       String  // e.g. "Red", "XL", "Cotton"
+  
+  @@unique([productId, name, value])
+  @@index([name, value])
+}
+
+// Inventory Management
+model InventoryLog {
+  id          String      @id @default(cuid())
+  productId   String
+  product     Product     @relation(fields: [productId], references: [id])
+  quantity    Int         // Can be positive (stock in) or negative (stock out)
+  reason      String      // e.g. "purchase", "sale", "return", "adjustment"
+  reference   String?     // e.g. Order ID, Purchase ID
+  notes       String?
+  createdAt   DateTime    @default(now())
+  createdBy   String      // User ID who performed this action
+  
+  @@index([productId, createdAt])
+}
+
+// Promotions & Coupons
+model Coupon {
+  id            Int              @id @default(autoincrement())
+  code          String           @unique
+  description   String?
+  discount      Float            // Amount or percentage
+  isPercentage  Boolean          @default(true)
+  minPurchase   Float?           // Minimum purchase amount required
+  maxDiscount   Float?           // Maximum discount allowed (for percentage discounts)
+  startDate     DateTime         @default(now())
+  expiration    DateTime
+  usageLimit    Int?             // How many times the coupon can be used in total
+  perUserLimit  Int?             // How many times one user can use this coupon
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  
+  // Relations
+  productCoupons ProductCoupon[]
+  orders        Order[]          // Orders where this coupon was applied
+  
+  @@index([code, isActive])
+  Cart Cart[]
+}
+
+model ProductCoupon {
+  couponId   Int
+  productId  String
+  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@id([couponId, productId])
+}
+
+// Cart Management
+model Cart {
+  id                    String      @id @default(cuid())
+  userId                String      @unique
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items                 CartItem[]
+  totalPrice            Float       @default(0)
+  totalPriceAfterDiscount Float?
+  appliedCouponId       Int?
+  appliedCoupon         Coupon?     @relation(fields: [appliedCouponId], references: [id])
+  discount              Float?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  
+  @@index([userId])
+}
+
+model CartItem {
+  id          String   @id @default(cuid())
+  cartId      String
+  cart        Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  variantId   Int?     // Optional if selecting a specific variant
+  quantity    Int
+  price       Float    // Price at time of adding to cart
+  total       Float
+  
+  @@unique([cartId, productId, variantId])
+  @@index([cartId])
+}
+
+// Wishlist
+model Wishlist {
+  id          String          @id @default(cuid())
+  userId      String          @unique
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       WishlistItem[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model WishlistItem {
+  id          String    @id @default(cuid())
+  wishlistId  String
+  wishlist    Wishlist  @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  addedAt     DateTime  @default(now())
+  
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+}
+
+// Order Management
 enum OrderStatus {
   PENDING
+  AWAITING_PAYMENT
+  PAYMENT_FAILED
+  PROCESSING
   CONFIRMED
   SHIPPED
+  OUT_FOR_DELIVERY
   DELIVERED
+  CANCELLED
+  RETURNED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
   CANCELLED
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  userId     String
-  userName   String
-  userEmail  String
-  subtotal   Float       @default(0)
-  tax        Float       @default(0)
-  grandTotal Float       @default(0)
-  status     OrderStatus @default(PENDING)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  orderItems OrderItem[]
+  id                String         @id @default(cuid())
+  orderNumber       String         @unique
+  userId            String
+  user              User           @relation(fields: [userId], references: [id])
+  shippingAddressId String
+  shippingAddress   Address        @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddressId  String
+  billingAddress    Address        @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  subtotal          Float          @default(0)
+  tax               Float          @default(0)
+  shippingFee       Float          @default(0)
+  discount          Float          @default(0)
+  couponId          Int?
+  coupon            Coupon?        @relation(fields: [couponId], references: [id])
+  grandTotal        Float          @default(0)
+  orderStatus       OrderStatus    @default(PENDING)
+  paymentStatus     PaymentStatus  @default(PENDING)
+  paymentMethod     String         // e.g. "credit_card", "paypal", "cash_on_delivery"
+  paymentIntentId   String?        // For payment gateway reference
+  notes             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  
+  // Relations
+  orderItems        OrderItem[]
+  orderHistory      OrderHistory[]
+  transactions      Transaction[]
+  
+  @@index([userId, orderStatus, createdAt])
+  @@index([orderNumber])
+}
+model Transaction {
+  id   String    @id @default(cuid())
+
+  Order Order[]
+}
+model OrderHistory {
+  id  String    @id @default(cuid())
+
+  Order Order[]
 }
 
 model OrderItem {
-  id          String @id @default(cuid())
-  orderId     String
-  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId   String
-  productName String
-  sku         String
-  price       Float
-  quantity    Int
-  total       Float
+  id            String    @id @default(cuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product   @relation(fields: [productId], references: [id])
+  productName   String
+  variantName   String?
+  sku           String
+  price         Float
+  quantity      Int
+  discount      Float     @default(0)
+  tax           Float     @default(0)
+
 }
+
