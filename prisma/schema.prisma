@@ -35,31 +35,68 @@ model User {
   @@index([authUserId])
 }
 model Notification {
-  id  String    @id @default(cuid())
-
-  User User[]
+   id        String   @id @default(cuid())
+  userId    String   // Foreign key to User
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 model PaymentMethod {
-  id  String    @id @default(cuid())
-
-  User User[]
+id                        String   @id @default(cuid())
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethodType         String
+  additionalType            String?
+  alternateName             String?
+  description               String?
+  disambiguatingDescription String?
+  identifier                String?
+  image                     String?
+  mainEntityOfPage          String?
+  name                      String
+  potentialAction           String?
+  sameAs                    String?
+  subjectOf                 String?
+  url                       String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 }
 
 model Address {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String   // Name for this address (e.g. "Home", "Work")
-  addressLine1 String
-  addressLine2 String?
-  city        String
-  state       String
-  country     String
-  postalCode  String
-  isDefault   Boolean  @default(false)
-  phoneNumber String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+ id                        String   @id @default(cuid())
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addressCountry            String?
+  addressLocality           String?
+  addressRegion             String?
+  postOfficeBoxNumber       String?
+  postalCode                String?
+  streetAddress             String?
+  areaServed                String?
+  availableLanguage         String?
+  contactOption             String?
+  contactType               String?
+  email                     String?
+  faxNumber                 String?
+  hoursAvailable            String?
+  productSupported          String?
+  telephone                 String?
+  additionalType            String?
+  alternateName             String?
+  description               String?
+  disambiguatingDescription String?
+  identifier                String?
+  image                     String?
+  mainEntityOfPage          String?
+  name                      String?
+  potentialAction           String?
+  sameAs                    String?
+  subjectOf                 String?
+  url                       String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 
   // Relations
   orders      Order[]  @relation("ShippingAddress")
@@ -165,6 +202,7 @@ model PasswordReset {
 // Product Management
 model Product {
   id                String           @id @default(cuid())
+  name String
   sku               String           @unique
   title             String
   slug              String           @unique
@@ -173,6 +211,7 @@ model Product {
   description       String?
   shortDescription  String?
   price             Float
+  color String?
   priceAfterDiscount Float?
   quantity          Int              @default(0)
   sold              Int              @default(0)
@@ -190,6 +229,7 @@ model Product {
   metaDescription   String?
   ratingAvg         Float?     
   ratingCount       Int              @default(0)
+    releaseDate       DateTime?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
@@ -471,10 +511,85 @@ model Order {
   @@index([orderNumber])
 }
 model Transaction {
-  id   String    @id @default(cuid())
-
+  id                  Int         @id @default(autoincrement())
+  acceptedOffer       String
+  billingAddress      String
+  brokerId            Int?
+  broker              Broker?     @relation(fields: [brokerId], references: [id])
+  confirmationNumber  String
+  customerId          Int
+  customer            Customer    @relation(fields: [customerId], references: [id])
+  discount            Float?
+  discountCode        String?
+  discountCurrency    String?
+  isGift              Boolean
+  orderDate           DateTime
+  orderDeliveryId     Int?
+  orderDelivery       ParcelDelivery? @relation(fields: [orderDeliveryId], references: [id])
+  orderNumber         String
+  orderStatus         String
+  orderedItemId       Int
+  orderedItem         OrderedItem @relation(fields: [orderedItemId], references: [id])
+  partOfInvoiceId     Int?
+  partOfInvoice       Invoice?    @relation(fields: [partOfInvoiceId], references: [id])
+  paymentDueDate      DateTime
+  paymentMethod       String
+  paymentMethodId     String?
+  paymentUrl          String?
+  sellerId            Int
+  seller              Seller      @relation(fields: [sellerId], references: [id])
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
   Order Order[]
 }
+
+
+model Broker {
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+}
+
+model Customer {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  transactions Transaction[]
+}
+
+model ParcelDelivery {
+  id           Int           @id @default(autoincrement())
+  trackingNumber String
+  address      String
+  status       String
+
+  Transaction Transaction[]
+}
+
+model OrderedItem {
+  id           Int           @id @default(autoincrement())
+  name         String
+  quantity     Int
+  price        Float
+  description  String
+
+  Transaction Transaction[]
+}
+
+model Invoice {
+  id           Int           @id @default(autoincrement())
+  invoiceNumber String
+  totalAmount  Float
+  dateIssued   DateTime
+  transactions Transaction[]
+}
+
+model Seller {
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+}
+
 model OrderHistory {
   id  String    @id @default(cuid())
 
