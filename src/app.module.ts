@@ -30,6 +30,7 @@ import { WishlistItemModule } from './common/wishlist-item/wishlist-item.module'
 import { TransactionModule } from './common/transaction/transaction.module';
 import { BrokerModule } from './common/broker/broker.module';
 import { CustomerModule } from './common/customer/customer.module';
+import { ParcelDeliveryModule } from './common/parcel-delivery/parcel-delivery.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { CustomerModule } from './common/customer/customer.module';
     TransactionModule,
     BrokerModule,
     CustomerModule,
+    ParcelDeliveryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
