@@ -28,6 +28,7 @@ import { CartItemModule } from './common/cart-item/cart-item.module';
 import { WishlistModule } from './common/wishlist/wishlist.module';
 import { WishlistItemModule } from './common/wishlist-item/wishlist-item.module';
 import { TransactionModule } from './common/transaction/transaction.module';
+import { BrokerModule } from './common/broker/broker.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { TransactionModule } from './common/transaction/transaction.module';
     WishlistModule,
     WishlistItemModule,
     TransactionModule,
+    BrokerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
