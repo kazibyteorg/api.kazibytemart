@@ -18,6 +18,7 @@ import { PasswordResetModule } from './common/password-reset/password-reset.modu
 import { CategoryModule } from './common/category/category.module';
 import { SubcategoryModule } from './common/subcategory/subcategory.module';
 import { BrandModule } from './common/brand/brand.module';
+import { ReviewModule } from './common/review/review.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BrandModule } from './common/brand/brand.module';
     CategoryModule,
     SubcategoryModule,
     BrandModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],
