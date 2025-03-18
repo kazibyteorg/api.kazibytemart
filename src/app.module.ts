@@ -16,6 +16,7 @@ import { LoginHistoryModule } from './common/login-history/login-history.module'
 import { VerificationCodeModule } from './common/verification-code/verification-code.module';
 import { PasswordResetModule } from './common/password-reset/password-reset.module';
 import { CategoryModule } from './common/category/category.module';
+import { SubcategoryModule } from './common/subcategory/subcategory.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CategoryModule } from './common/category/category.module';
     VerificationCodeModule,
     PasswordResetModule,
     CategoryModule,
+    SubcategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
