@@ -10,6 +10,7 @@ import { ProductModule } from './common/product/product.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { NotificationModule } from './common/notification/notification.module';
 import { PaymentMethodModule } from './common/payment-method/payment-method.module';
+import { AddressModule } from './common/address/address.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PaymentMethodModule } from './common/payment-method/payment-method.modu
     PrismaModule,
     NotificationModule,
     PaymentMethodModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
