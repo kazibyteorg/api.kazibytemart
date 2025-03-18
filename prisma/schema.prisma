@@ -620,9 +620,16 @@ model Seller {
 }
 
 model OrderHistory {
-  id  String    @id @default(cuid())
+   id          String    @id @default(cuid())
+  orderId     String
+  orderStatus String    // The status of the order at a specific point in time
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  Order Order[]
+  // Relations
+  order       Order     @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
 }
 
 model OrderItem {

@@ -34,6 +34,7 @@ import { ParcelDeliveryModule } from './common/parcel-delivery/parcel-delivery.m
 import { OrderedItemModule } from './common/ordered-item/ordered-item.module';
 import { InvoiceModule } from './common/invoice/invoice.module';
 import { SellerModule } from './common/seller/seller.module';
+import { OrderHistoryModule } from './common/order-history/order-history.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { SellerModule } from './common/seller/seller.module';
     OrderedItemModule,
     InvoiceModule,
     SellerModule,
+    OrderHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
