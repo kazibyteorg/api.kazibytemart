@@ -27,6 +27,7 @@ import { ProductCouponModule } from './common/product-coupon/product-coupon.modu
 import { CartItemModule } from './common/cart-item/cart-item.module';
 import { WishlistModule } from './common/wishlist/wishlist.module';
 import { WishlistItemModule } from './common/wishlist-item/wishlist-item.module';
+import { TransactionModule } from './common/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { WishlistItemModule } from './common/wishlist-item/wishlist-item.module'
     CartItemModule,
     WishlistModule,
     WishlistItemModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
