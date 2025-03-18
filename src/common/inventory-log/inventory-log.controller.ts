@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { InventoryLogService } from './inventory-log.service';
 import { CreateInventoryLogDto } from './dto/create-inventory-log.dto';
 import { UpdateInventoryLogDto } from './dto/update-inventory-log.dto';
@@ -23,7 +31,10 @@ export class InventoryLogController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInventoryLogDto: UpdateInventoryLogDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateInventoryLogDto: UpdateInventoryLogDto,
+  ) {
     return this.inventoryLogService.update(+id, updateInventoryLogDto);
   }
 

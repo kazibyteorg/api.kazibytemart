@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SessionTokenService } from './session-token.service';
 import { CreateSessionTokenDto } from './dto/create-session-token.dto';
 import { UpdateSessionTokenDto } from './dto/update-session-token.dto';
@@ -23,7 +31,10 @@ export class SessionTokenController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSessionTokenDto: UpdateSessionTokenDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSessionTokenDto: UpdateSessionTokenDto,
+  ) {
     return this.sessionTokenService.update(+id, updateSessionTokenDto);
   }
 
