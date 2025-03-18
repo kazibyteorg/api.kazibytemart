@@ -17,6 +17,7 @@ import { VerificationCodeModule } from './common/verification-code/verification-
 import { PasswordResetModule } from './common/password-reset/password-reset.module';
 import { CategoryModule } from './common/category/category.module';
 import { SubcategoryModule } from './common/subcategory/subcategory.module';
+import { BrandModule } from './common/brand/brand.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SubcategoryModule } from './common/subcategory/subcategory.module';
     PasswordResetModule,
     CategoryModule,
     SubcategoryModule,
+    BrandModule,
   ],
   controllers: [AppController],
   providers: [AppService],
