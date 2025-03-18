@@ -20,6 +20,7 @@ import { SubcategoryModule } from './common/subcategory/subcategory.module';
 import { BrandModule } from './common/brand/brand.module';
 import { ReviewModule } from './common/review/review.module';
 import { ProductVariantModule } from './common/product-variant/product-variant.module';
+import { ProductAttributeModule } from './common/product-attribute/product-attribute.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ProductVariantModule } from './common/product-variant/product-variant.m
     BrandModule,
     ReviewModule,
     ProductVariantModule,
+    ProductAttributeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
