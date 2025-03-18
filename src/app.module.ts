@@ -33,6 +33,7 @@ import { CustomerModule } from './common/customer/customer.module';
 import { ParcelDeliveryModule } from './common/parcel-delivery/parcel-delivery.module';
 import { OrderedItemModule } from './common/ordered-item/ordered-item.module';
 import { InvoiceModule } from './common/invoice/invoice.module';
+import { SellerModule } from './common/seller/seller.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { InvoiceModule } from './common/invoice/invoice.module';
     ParcelDeliveryModule,
     OrderedItemModule,
     InvoiceModule,
+    SellerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
