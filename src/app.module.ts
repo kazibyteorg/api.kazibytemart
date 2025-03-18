@@ -14,6 +14,7 @@ import { AddressModule } from './common/address/address.module';
 import { SessionTokenModule } from './common/session-token/session-token.module';
 import { LoginHistoryModule } from './common/login-history/login-history.module';
 import { VerificationCodeModule } from './common/verification-code/verification-code.module';
+import { PasswordResetModule } from './common/password-reset/password-reset.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { VerificationCodeModule } from './common/verification-code/verification-
     SessionTokenModule,
     LoginHistoryModule,
     VerificationCodeModule,
+    PasswordResetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
