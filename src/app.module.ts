@@ -24,6 +24,7 @@ import { ProductAttributeModule } from './common/product-attribute/product-attri
 import { InventoryLogModule } from './common/inventory-log/inventory-log.module';
 import { CouponModule } from './common/coupon/coupon.module';
 import { ProductCouponModule } from './common/product-coupon/product-coupon.module';
+import { CartItemModule } from './common/cart-item/cart-item.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ProductCouponModule } from './common/product-coupon/product-coupon.modu
     InventoryLogModule,
     CouponModule,
     ProductCouponModule,
+    CartItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
