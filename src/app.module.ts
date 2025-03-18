@@ -22,6 +22,7 @@ import { ReviewModule } from './common/review/review.module';
 import { ProductVariantModule } from './common/product-variant/product-variant.module';
 import { ProductAttributeModule } from './common/product-attribute/product-attribute.module';
 import { InventoryLogModule } from './common/inventory-log/inventory-log.module';
+import { CouponModule } from './common/coupon/coupon.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { InventoryLogModule } from './common/inventory-log/inventory-log.module'
     ProductVariantModule,
     ProductAttributeModule,
     InventoryLogModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
