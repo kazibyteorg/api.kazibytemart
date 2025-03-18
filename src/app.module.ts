@@ -11,6 +11,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { NotificationModule } from './common/notification/notification.module';
 import { PaymentMethodModule } from './common/payment-method/payment-method.module';
 import { AddressModule } from './common/address/address.module';
+import { SessionTokenModule } from './common/session-token/session-token.module';
+import { LoginHistoryModule } from './common/login-history/login-history.module';
+import { VerificationCodeModule } from './common/verification-code/verification-code.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { AddressModule } from './common/address/address.module';
     NotificationModule,
     PaymentMethodModule,
     AddressModule,
+    SessionTokenModule,
+    LoginHistoryModule,
+    VerificationCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
