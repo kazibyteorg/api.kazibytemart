@@ -23,6 +23,7 @@ import { ProductVariantModule } from './common/product-variant/product-variant.m
 import { ProductAttributeModule } from './common/product-attribute/product-attribute.module';
 import { InventoryLogModule } from './common/inventory-log/inventory-log.module';
 import { CouponModule } from './common/coupon/coupon.module';
+import { ProductCouponModule } from './common/product-coupon/product-coupon.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CouponModule } from './common/coupon/coupon.module';
     ProductAttributeModule,
     InventoryLogModule,
     CouponModule,
+    ProductCouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
