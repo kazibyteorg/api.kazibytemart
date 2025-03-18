@@ -19,6 +19,7 @@ import { CategoryModule } from './common/category/category.module';
 import { SubcategoryModule } from './common/subcategory/subcategory.module';
 import { BrandModule } from './common/brand/brand.module';
 import { ReviewModule } from './common/review/review.module';
+import { ProductVariantModule } from './common/product-variant/product-variant.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReviewModule } from './common/review/review.module';
     SubcategoryModule,
     BrandModule,
     ReviewModule,
+    ProductVariantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
