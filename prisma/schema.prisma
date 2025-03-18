@@ -21,8 +21,37 @@ model User {
   defaultAddressId String?
   isActive      Boolean   @default(true)
   isDeleted     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  additionalName      String?   // Middle name
+  familyName          String?   // Last name
+  givenName           String?   // First name
+  telephone           String?   
+  address             String?   
+  birthDate           DateTime? 
+  birthPlace          String?   
+  nationality         String?   
+  gender             String?   
+  jobTitle            String?   
+  worksFor            String?   // Organization name
+  hasOccupation       String?   
+  skills             String?   
+  knowsLanguage       String?   
+  affiliation         String?   
+  alumniOf            String?   
+  sponsor             String?   
+  netWorth            Float?    
+  owns                String?   // List of owned items
+  spouse              String?   
+  parent              String?   
+  children            String?   
+  sibling             String?   
+  colleague           String?   
+  follows             String?   
+  relatedTo           String?   
+  image               String?   // Profile picture URL
+  description         String?   // Bio
+  url                 String?   // Personal website
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   // Relations
   orders        Order[]
