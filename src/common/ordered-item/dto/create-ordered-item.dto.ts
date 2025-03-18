@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class CreateOrderItemDto {
+export class CreateOrderedItemDto {
   @ApiProperty({
     description: 'ID of the order item',
     example: 'cuid()',
