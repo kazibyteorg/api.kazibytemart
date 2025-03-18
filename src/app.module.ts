@@ -32,6 +32,7 @@ import { BrokerModule } from './common/broker/broker.module';
 import { CustomerModule } from './common/customer/customer.module';
 import { ParcelDeliveryModule } from './common/parcel-delivery/parcel-delivery.module';
 import { OrderedItemModule } from './common/ordered-item/ordered-item.module';
+import { InvoiceModule } from './common/invoice/invoice.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { OrderedItemModule } from './common/ordered-item/ordered-item.module';
     CustomerModule,
     ParcelDeliveryModule,
     OrderedItemModule,
+    InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
