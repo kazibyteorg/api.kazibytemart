@@ -25,6 +25,8 @@ import { InventoryLogModule } from './common/inventory-log/inventory-log.module'
 import { CouponModule } from './common/coupon/coupon.module';
 import { ProductCouponModule } from './common/product-coupon/product-coupon.module';
 import { CartItemModule } from './common/cart-item/cart-item.module';
+import { WishlistModule } from './common/wishlist/wishlist.module';
+import { WishlistItemModule } from './common/wishlist-item/wishlist-item.module';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import { CartItemModule } from './common/cart-item/cart-item.module';
     CouponModule,
     ProductCouponModule,
     CartItemModule,
+    WishlistModule,
+    WishlistItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
