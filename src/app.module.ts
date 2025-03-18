@@ -7,9 +7,10 @@ import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { ProductModule } from './product/product.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule, UserModule, OrderModule, CartModule, InventoryModule, ProductModule],
+  imports: [AuthModule, UserModule, OrderModule, CartModule, InventoryModule, ProductModule, PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })
